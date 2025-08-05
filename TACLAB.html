@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time And Control - 游戏设定</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --card-bg: rgba(26, 26, 46, 0.8);
+            --blue: #3498db;
+            --red: #e74c3c;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text);
+            min-height: 100vh;
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1794') no-repeat center center;
+            background-size: cover;
+            opacity: 0.15;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: rgba(10, 10, 20, 0.9);
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            background: linear-gradient(to right, var(--blue), var(--red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        
+        .logo-balls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .blue-ball, .red-ball {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .blue-ball {
+            background: radial-gradient(circle at 30% 30%, #5dade2, var(--blue));
+        }
+        
+        .red-ball {
+            background: radial-gradient(circle at 30% 30%, #ec7063, var(--red));
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        nav a:hover, nav a.active {
+            color: var(--highlight);
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--highlight);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        nav a:hover::after, nav a.active::after {
+            width: 100%;
+        }
+        
+        .page {
+            display: none;
+            padding: 50px 0;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .page-title h2 {
+            font-size: 36px;
+            display: inline-block;
+            padding-bottom: 10px;
+            position: relative;
+        }
+        
+        .page-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--highlight);
+            border-radius: 2px;
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(45deg, var(--accent), #2c3e50);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px 0;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .image-placeholder::before {
+            content: "游戏图片展示位置";
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .image-placeholder.home {
+            height: 500px;
+        }
+        
+        .content-box {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .content-box h3 {
+            color: var(--highlight);
+            margin-bottom: 20px;
+            font-size: 24px;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .content-box h3::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            height: 80%;
+            width: 5px;
+            background: var(--highlight);
+            border-radius: 10px;
+        }
+        
+        .content-box p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 17px;
+            color: #e0e0e0;
+        }
+        
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .character-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .character-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .character-image {
+            height: 280px;
+            background: linear-gradient(45deg, var(--accent), #2c3e50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .character-image::before {
+            content: "角色图片";
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .character-info {
+            padding: 20px;
+        }
+        
+        .character-info h3 {
+            color: var(--highlight);
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+        
+        .character-info p {
+            color: #ccc;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .character-detail {
+            display: none;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .character-detail.active {
+            display: block;
+        }
+        
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 20px;
+            background: var(--accent);
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: var(--highlight);
+        }
+        
+        .about-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .contact-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            min-width: 250px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .contact-card h3 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+        }
+        
+        .contact-card p {
+            font-size: 18px;
+            margin: 8px 0;
+        }
+        
+        .qq-group {
+            background: linear-gradient(45deg, #12c2e9, #c471ed, #f64f59);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        footer {
+            background: rgba(10, 10, 20, 0.9);
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 50px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .copyright {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            
+            .characters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .image-placeholder {
+                height: 300px;
+            }
+            
+            .image-placeholder.home {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <div class="logo-balls">
+                    <div class="blue-ball"></div>
+                    <div class="red-ball"></div>
+                </div>
+                <h1>Time And Control</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-page="home">首页</a></li>
+                    <li><a href="#" class="nav-link" data-page="plot">剧情</a></li>
+                    <li><a href="#" class="nav-link" data-page="characters">角色</a></li>
+                    <li><a href="#" class="nav-link" data-page="background">故事背景</a></li>
+                    <li><a href="#" class="nav-link" data-page="about">关于</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="container">
+        <!-- 首页 -->
+        <section id="home" class="page active">
+            <div class="page-title">
+                <h2>欢迎来到Time And Control</h2>
+                <p>探索时间、记忆与身份的科幻解谜游戏</p>
+            </div>
+            
+            <div class="image-placeholder home"></div>
+            
+            <div class="content-box">
+                <h3>游戏简介</h3>
+                <p>《Time And Control》是一款科幻题材的解谜冒险游戏，玩家将扮演失去记忆的主角Milu，在一座神秘的废弃实验室中醒来。玩家需要利用特殊的时间控制设备，解开实验室的重重谜题，同时揭开自己身世的真相。</p>
+                <p>游戏以时间操控为核心机制，玩家可以使用红蓝两种手环改变环境中物品的时间状态，解决谜题并探索被遗忘的真相。随着游戏的进行，玩家将逐渐发现实验室背后的黑暗秘密，以及自己与这一切的关联。</p>
+            </div>
+            
+            <div class="content-box">
+                <h3>游戏特色</h3>
+                <p>• 创新的时间操控机制 - 使用红蓝手环加速或回溯物品的时间状态</p>
+                <p>• 引人入胜的科幻剧情 - 探索记忆、身份和伦理的深刻主题</p>
+                <p>• 丰富的环境谜题 - 20个独特区域等待探索和解谜</p>
+                <p>• 多重结局 - 玩家的选择将影响故事走向和最终结局</p>
+                <p>• 沉浸式氛围 - 废弃实验室的压抑环境与科幻元素完美结合</p>
+            </div>
+        </section>
+        
+        <!-- 剧情页 -->
+        <section id="plot" class="page">
+            <div class="page-title">
+                <h2>游戏剧情</h2>
+                <p>探索时间背后的真相</p>
+            </div>
+            
+            <div class="image-placeholder"></div>
+            
+            <div class="content-box">
+                <h3>主线剧情</h3>
+                <p>在TAC实验室收留MILU后不久，实验室发生了实验事故，MILU也因为实验设备爆炸而昏迷。在TAC实验室的实验事故经过一段时间后，Milu在实验室的杂物间苏醒，因为实验室设备爆炸，Milu忘记了之前的大部分记忆。</p>
+                <p>杂物间没有任何食物，Milu在邻近自己附近的箱子找到了TC实验设备，还有用来打开杂物间大门的验证卡。Milu需要收集实验室的数据去解开每一个被关闭的实验室大门离开这里，并在途中找到自己的记录档案推理出自己的个人信息。</p>
+                <p>Milu和Yoki在路上会遇到很多困难，在手环和文件的帮助下，他们得以突破这些难关。实验室一共有20个区域才能到达大门，从实验室离开。在通往大门的路上，因为药物和实验室的废弃，被药物浸泡的植物挡住了一些机关和通道，TC实验设备对于这些植物的作用有限，只有近期生长的植物可以被控制。</p>
+                <p>Milu可以探索关于实验室的所有内容，探索事实和实验事故的原因。修理好备用电源，与实验室终端交互，获得进一步指示。</p>
+            </div>
+            
+            <div class="content-box">
+                <h3>暗线剧情</h3>
+                <p>Chan在失去了妹妹Sally之后，在保存好妹妹的遗体之后，将实验室研究方向调转向时间控制。但是Chan发现研发出来的设备只能控制物品的时间状态。如果强行作用于生物，生物身上会有可怕的影响，包括但不限于行尸走肉、爆炸、死亡。</p>
+                <p>所以Chan便研究起人体克隆，没有人对这个技术信心十足，所以Chan一直没有头绪。直到Milu逃跑时到达了TAC实验室附近，Chan发现Milu的各项数值和他的妹妹Sally十分相似，所以将Milu带到实验室。</p>
+                <p>在Chan将Milu带到实验室后，Chan将Milu麻醉之后，将本体Milu进行克隆、清除和测试。克隆体一律都称呼为Milu[编号]。Yoki实际上是TAC实验室的管理人员，保障实验成功/无差错。而June是Milu[xxxx]对离开的渴望，使TAC实验室在复制上一代Milu时一直被复制的思想。</p>
+            </div>
+        </section>
+        
+        <!-- 角色页 -->
+        <section id="characters" class="page">
+            <div class="page-title">
+                <h2>角色介绍</h2>
+                <p>探索游戏中的关键人物</p>
+            </div>
+            
+            <div class="image-placeholder"></div>
+            
+            <div class="characters-grid">
+                <!-- Milu -->
+                <div class="character-card" data-character="milu">
+                    <div class="character-image"></div>
+                    <div class="character-info">
+                        <h3>Milu</h3>
+                        <p>游戏主角，在孤儿院长大，逃离后进入TAC实验室，实验事故后失去记忆，在废弃实验室中醒来寻找真相。</p>
+                    </div>
+                </div>
+                
+                <!-- Yoki -->
+                <div class="character-card" data-character="yoki">
+                    <div class="character-image"></div>
+                    <div class="character-info">
+                        <h3>Yoki</h3>
+                        <p>自称探险家，在实验室附近发现了废弃的TAC实验室。实际上是实验室的管理人员，负责保障实验顺利进行。</p>
+                    </div>
+                </div>
+                
+                <!-- June -->
+                <div class="character-card" data-character="june">
+                    <div class="character-image"></div>
+                    <div class="character-info">
+                        <h3>June</h3>
+                        <p>Milu记忆中唯一的亲人，在Milu遇到困难时会给予指导（不出面/身影）。实际上是Milu克隆体渴望离开的思想投影。</p>
+                    </div>
+                </div>
+                
+                <!-- Chan -->
+                <div class="character-card" data-character="chan">
+                    <div class="character-image"></div>
+                    <div class="character-info">
+                        <h3>Chan</h3>
+                        <p>TAC实验室的创始人，因妹妹Sally的意外身亡而转向时间控制和克隆研究，没有人知道他在实验事故后是否逃出。</p>
+                    </div>
+                </div>
+                
+                <!-- Sally -->
+                <div class="character-card" data-character="sally">
+                    <div class="character-image"></div>
+                    <div class="character-info">
+                        <h3>Sally</h3>
+                        <p>Chan的妹妹，她的意外身亡导致Chan开始时间控制研究。Milu与Sally有惊人的相似性，成为Chan实验的对象。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 角色详情区域 -->
+            <div id="character-detail" class="character-detail">
+                <!-- 内容将通过JavaScript动态填充 -->
+            </div>
+        </section>
+        
+        <!-- 故事背景页 -->
+        <section id="background" class="page">
+            <div class="page-title">
+                <h2>故事背景</h2>
+                <p>TAC实验室与时间控制技术</p>
+            </div>
+            
+            <div class="image-placeholder"></div>
+            
+            <div class="content-box">
+                <h3>TAC实验室</h3>
+                <p>TAC实验室（Time and Control Laboratory）是由天才科学家Chan创立的前沿研究机构，最初致力于物理和生物技术研究。在Chan的妹妹Sally因意外事故身亡后，实验室的研究方向发生了根本性转变。</p>
+                <p>Chan将全部精力投入到时间控制技术的研究中，试图找到改变过去的方法。经过多年研究，实验室开发出了TC设备（Time Control Device），这种设备能够以有限的方式控制物体时间状态，但无法安全应用于生物体。</p>
+            </div>
+            
+            <div class="content-box">
+                <h3>TC设备说明</h3>
+                <p>本产品仅仅为测试版</p>
+                <p>共有红和蓝两种颜色的手环</p>
+                <p><strong>红色手环</strong>：长按手环侧边可以加速周围部分物品的时间状态到未来（不超过一定时间）</p>
+                <p><strong>蓝色手环</strong>：长按手环侧边可以回溯周围部分物品的时间状态到过去（不超过一定时间）</p>
+                <p>注意：该设备对生物体使用会产生严重后果，包括但不限于组织快速衰老、细胞退化、甚至爆炸性死亡。</p>
+            </div>
+            
+            <div class="content-box">
+                <h3>实验室事故</h3>
+                <p>在Milu参与实验后不久，实验室发生了灾难性事故。具体原因不明，但造成了整个实验室的废弃。实验事故导致时间场紊乱，部分区域时间流动异常，植物在实验室废弃后因接触实验药物而异常生长，阻塞了通道。</p>
+                <p>事故发生时，Milu在实验设备爆炸中昏迷，失去了大部分记忆。当她醒来时，实验室已经废弃多时，只有她和一个自称探险家的Yoki在实验室中探索。</p>
+            </div>
+        </section>
+        
+        <!-- 关于页 -->
+        <section id="about" class="page">
+            <div class="page-title">
+                <h2>关于我们</h2>
+                <p>游戏开发者信息</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="content-box">
+                    <h3>开发团队</h3>
+                    <p>《Time And Control》由TAC工作室制作。我们致力于创造具有深刻故事和独特机制的游戏体验。游戏灵感来源于对时间、记忆和身份认同的哲学思考，结合了科幻元素和悬疑叙事。</p>
+                </div>
+                
+                <div class="contact-info">
+                    <div class="contact-card">
+                        <h3>开发者</h3>
+                        <p><i class="fas fa-user"></i> @milu</p>
+                        <p><i class="fas fa-user"></i> @shirleychan</p>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <h3>联系方式</h3>
+                        <p><i class="fas fa-envelope"></i> contact@tac-studio.com</p>
+                        <p><i class="fab fa-twitter"></i> @TAC_Studio</p>
+                    </div>
+                </div>
+                
+                <div class="qq-group">
+                    <p><i class="fab fa-qq"></i> 加入QQ群：xxxxxxxxx</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container footer-content">
+            <div class="copyright">
+                <p>&copy; 2025 Time And Control 游戏开发团队. 保留所有权利</p>
+                <p>TAC工作室 | 探索时间与控制的边界</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // 页面导航
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 更新活动导航链接
+                document.querySelectorAll('.nav-link').forEach(item => {
+                    item.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // 隐藏所有页面
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // 显示目标页面
+                const targetPage = this.getAttribute('data-page');
+                document.getElementById(targetPage).classList.add('active');
+                
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+        
+        // 角色详情
+        const characters = {
+            milu: {
+                name: "Milu",
+                description: "游戏主角，在孤儿院长大，逃离后进入TAC实验室。在实验事故中失去记忆，在废弃实验室中醒来。Milu在实验室的杂物间苏醒后，发现自己失去了大部分记忆，只记得June是她的姐姐。在探索实验室的过程中，她必须利用找到的TC设备解开谜题，同时揭开自己的身世之谜。",
+                details: [
+                    "孤儿院背景：在xxx孤儿院长大，孤儿院院长经常虐待孤儿",
+                    "逃离孤儿院：在其他孤儿的帮助下逃离，到达TAC实验室附近",
+                    "实验对象：被Chan发现与Sally相似而带入实验室",
+                    "克隆实验：成为Chan人体克隆实验的对象"
+                ]
+            },
+            yoki: {
+                name: "Yoki",
+                description: "自称探险家，在实验室附近发现了废弃的TAC实验室。Yoki在实验室门口发现了TC设备使用说明，这成为Milu理解设备功能的关键。随着故事发展，Yoki的真实身份逐渐揭露——他实际上是TAC实验室的管理人员，负责保障实验成功进行。",
+                details: [
+                    "表面身份：城市周围的探险家",
+                    "真实身份：TAC实验室的管理人员",
+                    "职责：保障实验成功进行，无差错",
+                    "关键发现：在实验室门口发现了TC设备使用说明"
+                ]
+            },
+            june: {
+                name: "June",
+                description: "Milu记忆中唯一的亲人，在Milu遇到困难时会给予指导（不出面/身影）。随着剧情发展，June的真实身份被揭示——她并非真实存在的人物，而是Milu克隆体对自由的渴望在思想中的投影，是TAC实验室在复制过程中一直复制的思想。",
+                details: [
+                    "记忆中的姐姐：Milu醒来后唯一记住的人",
+                    "指导作用：在Milu遇到困难时给予指导（不出面/身影）",
+                    "真实本质：Milu克隆体渴望离开的思想投影",
+                    "复制思想：在复制Milu时一直被复制的思想"
+                ]
+            },
+            chan: {
+                name: "Chan",
+                description: "TAC实验室的创始人，天才科学家。因妹妹Sally的意外身亡而陷入悲痛，将研究方向转向时间控制技术。当发现Milu与Sally的相似性后，开始进行人体克隆实验。实验事故后，没有人知道他是否成功逃出实验室。",
+                details: [
+                    "实验室创始人：建立了TAC实验室",
+                    "研究转向：因妹妹Sally的意外身亡转向时间控制研究",
+                    "克隆实验：发现Milu与Sally相似后开始人体克隆研究",
+                    "下落不明：实验事故后无人知晓其下落"
+                ]
+            },
+            sally: {
+                name: "Sally",
+                description: "Chan的妹妹，她的意外身亡成为整个故事的起点。Sally的死亡导致Chan转向时间控制研究，试图找到改变过去的方法。Milu与Sally在生理指标上惊人的相似性，使Milu成为Chan克隆实验的对象。",
+                details: [
+                    "Chan的妹妹：实验室创始人的妹妹",
+                    "意外身亡：她的死亡导致Chan研究方向转变",
+                    "实验动机：Chan试图通过时间控制技术复活Sally",
+                    "相似性：Milu的各项数值与Sally高度相似"
+                ]
+            }
+        };
+        
+        // 角色卡片点击事件
+        document.querySelectorAll('.character-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const characterId = this.getAttribute('data-character');
+                const character = characters[characterId];
+                
+                const detailHTML = `
+                    <a href="#" class="back-button"><i class="fas fa-arrow-left"></i> 返回角色列表</a>
+                    <h3>${character.name}</h3>
+                    <p>${character.description}</p>
+                    <div style="margin-top: 20px;">
+                        <h4>角色细节</h4>
+                        <ul style="padding-left: 20px; margin-top: 10px;">
+                            ${character.details.map(detail => `<li>${detail}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="image-placeholder" style="margin-top: 30px;"></div>
+                `;
+                
+                document.getElementById('character-detail').innerHTML = detailHTML;
+                document.getElementById('character-detail').classList.add('active');
+                
+                // 添加返回按钮事件
+                document.querySelector('.back-button').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.getElementById('character-detail').classList.remove('active');
+                });
+                
+                // 滚动到详情区域
+                document.getElementById('character-detail').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
